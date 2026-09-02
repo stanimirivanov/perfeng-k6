@@ -1,0 +1,70 @@
+name: Build and optionally publish runner image
+on:
+  workflow_dispatch:
+    inputs:
+      publish:
+        description: Publish the validated main-branch image to GHCR
+        type: boolean
+        default: false
+        required: true
+permissions:
+  contents: read
+jobs:
+  image:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .node-version
+      - run: npm ci --ignore-scripts
+      - name: Build Linux AMD64 runner
+        shell: bash
+        run: |
+          set -euo pipefail
+          repository="ghcr.io/${GITHUB_REPOSITORY,,}"
+          image="$repository:sha-${GITHUB_SHA}-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
+          echo "RUNNER_REPOSITORY=$repository" >> "$GITHUB_ENV"
+          echo "RUNNER_IMAGE=$image" >> "$GITHUB_ENV"
+          docker build --platform linux/amd64 --build-arg VCS_REF="$GITHUB_SHA" -t "$image" .
+          node scripts/image.mjs verify "$image" "$GITHUB_SHA"
+      - name: Test using k6 extracted from the verified image
+        shell: bash
+        run: |
+          set -euo pipefail
+          task_container="$(docker create "$RUNNER_IMAGE")"
+          trap 'docker rm "$task_container" >/dev/null' EXIT
+          docker cp "$task_container:/usr/bin/k6" "$RUNNER_TEMP/k6"
+          chmod +x "$RUNNER_TEMP/k6"
+          export PATH="$RUNNER_TEMP:$PATH"
+          npm run validate
+          npm test
+      - name: Authenticate only for an explicitly requested publication
+        if: inputs.publish
+        shell: bash
+        env:
+          GHCR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: printf '%s' "$GHCR_TOKEN" | docker login ghcr.io -u "$GITHUB_ACTOR" --password-stdin
+      - name: Publish and verify registry-addressable bytes
+        if: inputs.publish
+        shell: bash
+        run: |
+          set -euo pipefail
+          docker push "$RUNNER_IMAGE"
+          reference="$(node scripts/image.mjs reference "$RUNNER_IMAGE" "$RUNNER_REPOSITORY")"
+          docker pull "$reference"
+          node scripts/image.mjs verify "$reference" "$GITHUB_SHA"
+          printf 'Verified runner image: %s\n\nSource revision: %s\n\nPlatform: linux/amd64\n' "$reference" "$GITHUB_SHA" >> "$GITHUB_STEP_SUMMARY"
+      - name: Build-only summary
+        if: ${{ !inputs.publish }}
+        run: echo "Build and tests passed. No image was published; no registry digest was allocated." >> "$GITHUB_STEP_SUMMARY"
+      - name: Log out
+        if: ${{ always() && inputs.publish }}
+        run: docker logout ghcr.io
