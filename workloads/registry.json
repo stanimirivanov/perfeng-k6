@@ -1,0 +1,92 @@
+{
+  "version": "1.0.0",
+  "tool": "k6",
+  "profiles": {
+    "smoke": {
+      "description": "Quick validation tests to verify basic functionality",
+      "purpose": "Verify that the system works correctly under minimal load",
+      "duration": "2m",
+      "typicalArrivalRate": 5,
+      "typicalMaxVUs": 20,
+      "useCase": "PR validation, quick sanity checks",
+      "defaultThresholds": {
+        "http_req_duration": ["p(95)<600"],
+        "http_req_failed": ["rate<0.02"]
+      }
+    },
+    "average": {
+      "description": "Typical production load simulation",
+      "purpose": "Simulate average daily production traffic patterns",
+      "duration": "9m",
+      "typicalArrivalRate": 50,
+      "typicalMaxVUs": 75,
+      "useCase": "Daily baseline, capacity planning reference",
+      "defaultThresholds": {
+        "http_req_duration": ["p(95)<450"],
+        "http_req_failed": ["rate<0.01"]
+      }
+    },
+    "regression": {
+      "description": "Standard regression tests for performance comparison",
+      "purpose": "Detect performance regressions between versions",
+      "duration": "15m",
+      "typicalArrivalRate": 50,
+      "typicalMaxVUs": 100,
+      "useCase": "Nightly regression suite, release qualification",
+      "defaultThresholds": {
+        "http_req_duration": ["p(95)<400", "p(99)<800"],
+        "http_req_failed": ["rate<0.005"]
+      }
+    },
+    "stress": {
+      "description": "High load stress tests",
+      "purpose": "Test system behavior under extreme load conditions",
+      "duration": "10m",
+      "typicalArrivalRate": 100,
+      "typicalMaxVUs": 500,
+      "useCase": "Breaking point discovery, failover validation",
+      "defaultThresholds": {
+        "http_req_duration": ["p(95)<1000"],
+        "http_req_failed": ["rate<0.1"]
+      }
+    },
+    "capacity": {
+      "description": "Maximum sustainable capacity tests",
+      "purpose": "Find maximum sustainable throughput",
+      "duration": "30m",
+      "typicalArrivalRate": 100,
+      "typicalMaxVUs": 1000,
+      "useCase": "Capacity planning, scalability analysis",
+      "defaultThresholds": {
+        "http_req_duration": ["p(95)<800"],
+        "http_req_failed": ["rate<0.05"]
+      }
+    }
+  },
+  "testScenarios": {
+    "checkout": {
+      "description": "Checkout flow API test",
+      "owner": "payments-team",
+      "criticality": "critical",
+      "supportedProfiles": [
+        "smoke",
+        "average",
+        "regression",
+        "stress",
+        "capacity"
+      ]
+    },
+    "search": {
+      "description": "Search API test",
+      "owner": "search-team",
+      "criticality": "high",
+      "supportedProfiles": ["smoke", "average", "regression", "stress"]
+    },
+    "account": {
+      "description": "Account management API test",
+      "owner": "identity-team",
+      "criticality": "medium",
+      "supportedProfiles": ["smoke", "average", "regression"]
+    }
+  }
+}
