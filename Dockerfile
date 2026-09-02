@@ -3,5 +3,6 @@ WORKDIR /tests
 COPY lib/ ./lib/
 COPY tests/ ./tests/
 COPY workloads/ ./workloads/
+COPY definitions/ ./definitions/
 ENTRYPOINT ["k6"]
 CMD ["run", "--no-usage-report", "--config", "workloads/smoke/checkout.json", "--summary-export", "/results/summary.json", "--out", "json=/results/points.jsonl", "tests/checkout/scenario.js"]

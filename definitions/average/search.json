@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "id": "search-average",
+  "version": "1.0.0",
+  "tool": "k6",
+  "profile": "average",
+  "model": "open",
+  "configuration": {
+    "path": "workloads/average/search.json",
+    "sha256": "fb2a549155feb3476788ba8d75c0d8acb0d11c05aa4d3ce7b89487efe1f9dc4d"
+  },
+  "phases": {
+    "unit": "seconds",
+    "warmup": 0,
+    "measurement": 540,
+    "cooldown": 0
+  },
+  "dataset": {
+    "kind": "none"
+  }
+}

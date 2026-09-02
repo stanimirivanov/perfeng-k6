@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "id": "search-stress",
+  "version": "1.0.0",
+  "tool": "k6",
+  "profile": "stress",
+  "model": "open",
+  "configuration": {
+    "path": "workloads/stress/search.json",
+    "sha256": "26441001ffef86f0abfc623e7698c2ad0b4e952aaa82d7cbe2141d6a345f18ac"
+  },
+  "phases": {
+    "unit": "seconds",
+    "warmup": 0,
+    "measurement": 600,
+    "cooldown": 0
+  },
+  "dataset": {
+    "kind": "none"
+  }
+}

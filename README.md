@@ -3,11 +3,13 @@
 Standalone k6 API scenarios extracted from performance-platform. This repository
 owns load generation, not scheduling, baselines, normalization, or performance
 decisions. Requires k6 **2.2.0** and Node.js **24.18.0** for local tooling.
-There are no npm dependencies and no Python project in this repository.
+Node tooling uses locked Ajv dependencies for offline contract validation.
+There is no Python project in this repository.
 
 ## Validate
 
 ```sh
+npm ci --ignore-scripts
 npm run validate
 npm test
 ```
@@ -48,8 +50,11 @@ summary.json plus points.jsonl. Native k6 environment options can still override
 profile settings; use a controlled environment for reproducible runs. Do not
 set options that disable thresholds or summaries in verification runs.
 
-Raw output is unmodified k6 output, not normalized metrics or a RawResult
-manifest. Summary statistics do not substitute for retained sample points.
+The runner verifies the selected workload definition and configuration checksum
+before starting. Raw output is unmodified k6 output, not normalized metrics.
+The separate [manifest builder](docs/raw-manifests.md) assembles a RawResult
+from storage receipts and explicitly supplied capture provenance.
+Summary statistics do not substitute for retained sample points.
 Raw records may contain target URLs or other sensitive metadata; apply access
 controls and retention policies. Initialization failures may produce no summary;
 a missing artifact is never evidence of a successful run.
@@ -82,13 +87,21 @@ verified image digest.
 
 ## Boundaries and follow-up
 
-Profiles remain native k6 configuration, not workload/v1 contracts. The legacy
+Profiles remain native k6 configuration. Their versioned workload/v1 definitions
+are under definitions/ and carry exact configuration hashes, model, and phase
+budgets. All current ramps are part of measurement, with no excluded warm-up or
+cooldown. The legacy
 catalogue is retained under legacy/ as migration input, not advertised as a valid
 current catalogue. Its names and metrics require explicit mapping.
 
-The next slice adds versioned workload descriptors and raw-result publication
-using accepted perfeng-contracts schemas, a real image digest, checksums, and
-real stored-artifact URIs. No placeholder URI or digest is emitted here.
-Kubernetes execution and uploads belong to later integration work.
+The manifest builder validates against five vendored schemas from the pinned
+perfeng-contracts 0.4.0 snapshot recorded in contracts.lock.json. It checks every
+schema checksum before use and never downloads schemas at runtime. Update the
+snapshot only through a reviewed dependency change; do not edit vendored schemas.
+
+Uploads, image/run attestation, resolved execution-configuration capture, and
+automatic measurement-phase instrumentation remain adapter/integration work.
+The builder does not invent these inputs or claim that supplied receipts prove
+remote storage. Kubernetes execution and normalization remain separate work.
 
 See [source provenance](docs/migration-provenance.md) for the extraction scope.

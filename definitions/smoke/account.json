@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "id": "account-smoke",
+  "version": "1.0.0",
+  "tool": "k6",
+  "profile": "smoke",
+  "model": "closed",
+  "configuration": {
+    "path": "workloads/smoke/account.json",
+    "sha256": "fdaf0df65eea159cf666fc0efc6224c20c41cce21171a4b1c10403930d065d0a"
+  },
+  "phases": {
+    "unit": "seconds",
+    "warmup": 0,
+    "measurement": 120,
+    "cooldown": 0
+  },
+  "dataset": {
+    "kind": "none"
+  }
+}

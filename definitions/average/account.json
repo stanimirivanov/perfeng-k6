@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "id": "account-average",
+  "version": "1.0.0",
+  "tool": "k6",
+  "profile": "average",
+  "model": "closed",
+  "configuration": {
+    "path": "workloads/average/account.json",
+    "sha256": "9469f3d8b0dfb641d6a7f92a5d16cc8796dc23445af182968d8ee908985e2c92"
+  },
+  "phases": {
+    "unit": "seconds",
+    "warmup": 0,
+    "measurement": 540,
+    "cooldown": 0
+  },
+  "dataset": {
+    "kind": "none"
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "id": "checkout-capacity",
+  "version": "1.0.0",
+  "tool": "k6",
+  "profile": "capacity",
+  "model": "open",
+  "configuration": {
+    "path": "workloads/capacity/checkout.json",
+    "sha256": "701d902ed892a8df36a7c0195166d9759938b0ec879aca510f29033e81db0484"
+  },
+  "phases": {
+    "unit": "seconds",
+    "warmup": 0,
+    "measurement": 1800,
+    "cooldown": 0
+  },
+  "dataset": {
+    "kind": "none"
+  }
+}

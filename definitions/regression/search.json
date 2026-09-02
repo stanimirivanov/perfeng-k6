@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "id": "search-regression",
+  "version": "1.0.0",
+  "tool": "k6",
+  "profile": "regression",
+  "model": "open",
+  "configuration": {
+    "path": "workloads/regression/search.json",
+    "sha256": "4f02da710d54f71e32c39bb2d62671fab8909fe9c0afeed7b83e1a729f8711d8"
+  },
+  "phases": {
+    "unit": "seconds",
+    "warmup": 0,
+    "measurement": 900,
+    "cooldown": 0
+  },
+  "dataset": {
+    "kind": "none"
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "id": "checkout-regression",
+  "version": "1.0.0",
+  "tool": "k6",
+  "profile": "regression",
+  "model": "open",
+  "configuration": {
+    "path": "workloads/regression/checkout.json",
+    "sha256": "8b67804491e775496534673314a0ddd67737c6f3badd553a2f7fb9ba6b5c1d88"
+  },
+  "phases": {
+    "unit": "seconds",
+    "warmup": 0,
+    "measurement": 900,
+    "cooldown": 0
+  },
+  "dataset": {
+    "kind": "none"
+  }
+}

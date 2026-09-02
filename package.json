@@ -7,9 +7,14 @@
     "node": ">=24 <25"
   },
   "scripts": {
-    "test": "node --test tests-node/runner.test.mjs",
+    "test": "node --test tests-node/runner.test.mjs tests-node/contracts.test.mjs",
     "validate": "node scripts/validate.mjs",
     "run": "node scripts/run.mjs",
+    "manifest": "node scripts/manifest.mjs",
     "docker:build": "docker build -t perfeng-k6:0.1.0 ."
+  },
+  "dependencies": {
+    "ajv": "8.20.0",
+    "ajv-formats": "3.0.1"
   }
 }
