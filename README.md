@@ -81,9 +81,11 @@ docker run --rm --mount type=bind,source=/absolute/fresh-output,target=/results 
 
 The image contains scenarios and profiles, not the Node tooling. Native Docker/k6
 invocation does not provide the wrapper's existing-directory protection: always
-supply a fresh output directory. The base tag pins the tool version but is not
-a cryptographically immutable image identity. Production promotion must pin a
-verified image digest.
+supply a fresh output directory. The base image is digest-pinned. The final
+runner image has its own distinct registry digest; consumers must pin that
+digest. The manual [image publication workflow](docs/images.md) builds,
+verifies, and optionally publishes it to GHCR without publishing on ordinary
+pushes or pull requests.
 
 ## Boundaries and follow-up
 

@@ -7,7 +7,8 @@
     "node": ">=24 <25"
   },
   "scripts": {
-    "test": "node --test tests-node/runner.test.mjs tests-node/contracts.test.mjs",
+    "test": "node --test tests-node/runner.test.mjs tests-node/contracts.test.mjs tests-node/image.test.mjs",
+    "image:verify": "node scripts/image.mjs verify",
     "validate": "node scripts/validate.mjs",
     "run": "node scripts/run.mjs",
     "manifest": "node scripts/manifest.mjs",

@@ -27,7 +27,4 @@ jobs:
       - name: Build standalone image
         run: |
           docker build -t perfeng-k6:ci .
-          docker run --rm --entrypoint k6 perfeng-k6:ci version
-          docker run --rm perfeng-k6:ci inspect --execution-requirements --config workloads/smoke/checkout.json tests/checkout/scenario.js
-          docker run --rm perfeng-k6:ci inspect --execution-requirements --config workloads/smoke/search.json tests/search/scenario.js
-          docker run --rm perfeng-k6:ci inspect --execution-requirements --config workloads/smoke/account.json tests/account/scenario.js
+          node scripts/image.mjs verify perfeng-k6:ci
