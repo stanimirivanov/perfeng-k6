@@ -1,0 +1,23 @@
+{
+  "scenarios": {
+    "checkout_flow": {
+      "executor": "ramping-arrival-rate",
+      "startRate": 20,
+      "timeUnit": "1s",
+      "preAllocatedVUs": 100,
+      "maxVUs": 500,
+      "stages": [
+        { "duration": "2m", "target": 100 },
+        { "duration": "2m", "target": 300 },
+        { "duration": "3m", "target": 500 },
+        { "duration": "3m", "target": 0 }
+      ]
+    }
+  },
+  "thresholds": {
+    "biz_checkout_duration": ["p(95)<1000"],
+    "biz_transaction_error_rate": ["rate<0.1"],
+    "http_req_duration": ["p(95)<1000"],
+    "http_req_failed": ["rate<0.1"]
+  }
+}

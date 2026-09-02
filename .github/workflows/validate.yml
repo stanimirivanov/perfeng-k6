@@ -1,0 +1,32 @@
+name: Validate runner
+on:
+  pull_request:
+  push:
+    branches: [main]
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .node-version
+      - name: Install pinned k6
+        shell: bash
+        run: |
+          set -euo pipefail
+          version="$(cat .k6-version)"
+          curl --fail --location --output "$RUNNER_TEMP/k6.tar.gz" "https://github.com/grafana/k6/releases/download/v${version}/k6-v${version}-linux-amd64.tar.gz"
+          tar -xzf "$RUNNER_TEMP/k6.tar.gz" -C "$RUNNER_TEMP"
+          echo "$RUNNER_TEMP/k6-v${version}-linux-amd64" >> "$GITHUB_PATH"
+      - run: npm run validate
+      - run: npm test
+      - name: Build standalone image
+        run: |
+          docker build -t perfeng-k6:ci .
+          docker run --rm --entrypoint k6 perfeng-k6:ci version
+          docker run --rm perfeng-k6:ci inspect --execution-requirements --config workloads/smoke/checkout.json tests/checkout/scenario.js
+          docker run --rm perfeng-k6:ci inspect --execution-requirements --config workloads/smoke/search.json tests/search/scenario.js
+          docker run --rm perfeng-k6:ci inspect --execution-requirements --config workloads/smoke/account.json tests/account/scenario.js
