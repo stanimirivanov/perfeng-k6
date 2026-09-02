@@ -27,6 +27,13 @@ To add a profile, add its scenario JSON and registry entry, then run npm run
 validate and npm test. Scenario source must not export options that shadow the
 chosen profile.
 
-Future workload/v1 descriptors will pin configuration bytes and record measurement
-phases and dataset identity. Native profiles and this registry are not substitutes
-for those contracts.
+The matching definitions/<profile>/<scenario>.json documents implement workload/v1.
+They pin configuration bytes and record model, phase budgets, and dataset.kind:
+none (no separately versioned dataset). Native profiles and this registry are
+not substitutes for those contracts. Changes to configuration, phases, model,
+or dataset require a new workload version and updated checksums.
+
+All current profiles include their ramps in measurement. No warm-up/cooldown
+samples are excluded. The declared measurement budget is the executor duration
+or sum of stage durations, not the process lifetime; graceful stopping can take
+additional time. The manifest window must be observed separately.

@@ -2,6 +2,7 @@ import { spawnSync } from 'node:child_process';
 import { mkdirSync, readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { verifyWorkload } from './contracts.mjs';
 
 export const root = fileURLToPath(new URL('../', import.meta.url));
 export const version = readFileSync(resolve(root, '.k6-version'), 'utf8').trim();
@@ -20,6 +21,8 @@ export function run(test, profile, output, env = process.env, config) {
     throw new Error('Unsupported test/profile combination');
   }
   checkVersion();
+  // Fixture-only config overrides are not claimed as published workloads.
+  if (!config) verifyWorkload(root, `definitions/${profile}/${test}.json`);
   // Refuse to overwrite any previous run, including incomplete runs.
   const directory = resolve(output);
   mkdirSync(directory, { recursive: false });

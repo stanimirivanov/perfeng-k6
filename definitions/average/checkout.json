@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "id": "checkout-average",
+  "version": "1.0.0",
+  "tool": "k6",
+  "profile": "average",
+  "model": "open",
+  "configuration": {
+    "path": "workloads/average/checkout.json",
+    "sha256": "8cd1898853b023a3c6748b45e37b51bb64b518c1cf67a62221c5c1c0a372594c"
+  },
+  "phases": {
+    "unit": "seconds",
+    "warmup": 0,
+    "measurement": 540,
+    "cooldown": 0
+  },
+  "dataset": {
+    "kind": "none"
+  }
+}

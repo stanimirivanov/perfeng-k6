@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "id": "checkout-stress",
+  "version": "1.0.0",
+  "tool": "k6",
+  "profile": "stress",
+  "model": "open",
+  "configuration": {
+    "path": "workloads/stress/checkout.json",
+    "sha256": "5abc6c4d5a3263b48b876a7767c74a6db5b36229207d92c69b1bd37f2327e974"
+  },
+  "phases": {
+    "unit": "seconds",
+    "warmup": 0,
+    "measurement": 600,
+    "cooldown": 0
+  },
+  "dataset": {
+    "kind": "none"
+  }
+}

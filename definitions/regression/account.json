@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "id": "account-regression",
+  "version": "1.0.0",
+  "tool": "k6",
+  "profile": "regression",
+  "model": "closed",
+  "configuration": {
+    "path": "workloads/regression/account.json",
+    "sha256": "6b038c0817e4d0af498938273e0dd118a9242016cd07adb5a650922b643371f1"
+  },
+  "phases": {
+    "unit": "seconds",
+    "warmup": 0,
+    "measurement": 900,
+    "cooldown": 0
+  },
+  "dataset": {
+    "kind": "none"
+  }
+}

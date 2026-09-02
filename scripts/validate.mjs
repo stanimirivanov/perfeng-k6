@@ -3,6 +3,7 @@ import { spawnSync } from 'node:child_process';
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { checkVersion, root } from './run.mjs';
+import { verifyWorkload } from './contracts.mjs';
 
 checkVersion();
 function canonical(value) {
@@ -25,6 +26,9 @@ for (const [test, entry] of Object.entries(registry.testScenarios)) {
   const script = resolve(root, `tests/${test}/scenario.js`);
   assert(!readFileSync(script, 'utf8').includes('export const options'));
   for (const profile of entry.supportedProfiles) {
+    const { workload } = verifyWorkload(root, `definitions/${profile}/${test}.json`);
+    assert.equal(workload.id, `${test}-${profile}`);
+    assert.equal(workload.profile, profile);
     const config = resolve(root, `workloads/${profile}/${test}.json`);
     const expected = JSON.parse(readFileSync(config, 'utf8'));
     const result = spawnSync('k6', ['inspect', '--execution-requirements', '--config', config, script], { encoding: 'utf8', cwd: root });
