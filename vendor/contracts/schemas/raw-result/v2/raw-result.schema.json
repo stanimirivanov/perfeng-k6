@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://perfeng.dev/schemas/raw-result/v1/raw-result.schema.json",
-  "title": "Raw measurement artifact manifest",
+  "$id": "https://perfeng.dev/schemas/raw-result/v2/raw-result.schema.json",
+  "title": "Raw measurement artifact manifest with execution provenance",
   "type": "object",
   "additionalProperties": false,
   "required": [
@@ -17,13 +17,8 @@
     "artifacts"
   ],
   "properties": {
-    "schemaVersion": {
-      "type": "integer",
-      "const": 1
-    },
-    "kind": {
-      "const": "RawResult"
-    },
+    "schemaVersion": {"type": "integer", "const": 2},
+    "kind": {"const": "RawResult"},
     "contractsVersion": {
       "$ref": "https://perfeng.dev/schemas/workload/v1/workload.schema.json#/$defs/version"
     },
@@ -36,11 +31,7 @@
     "workload": {
       "type": "object",
       "additionalProperties": false,
-      "required": [
-        "id",
-        "version",
-        "sha256"
-      ],
+      "required": ["id", "version", "sha256"],
       "properties": {
         "id": {
           "$ref": "https://perfeng.dev/schemas/workload/v1/workload.schema.json#/$defs/id"
@@ -56,11 +47,7 @@
     "producer": {
       "type": "object",
       "additionalProperties": false,
-      "required": [
-        "name",
-        "version",
-        "image"
-      ],
+      "required": ["name", "version", "artifact"],
       "properties": {
         "name": {
           "$ref": "https://perfeng.dev/schemas/workload/v1/workload.schema.json#/$defs/id"
@@ -68,30 +55,21 @@
         "version": {
           "$ref": "https://perfeng.dev/schemas/workload/v1/workload.schema.json#/$defs/version"
         },
-        "image": {
-          "$ref": "https://perfeng.dev/schemas/catalogue/v1/test-catalogue.schema.json#/properties/tests/items/properties/artifact/properties/image"
+        "artifact": {
+          "$ref": "https://perfeng.dev/schemas/catalogue/v2/test-catalogue.schema.json#/$defs/executionArtifact"
         }
       }
     },
     "measurementWindow": {
       "type": "object",
       "additionalProperties": false,
-      "required": [
-        "start",
-        "end"
-      ],
+      "required": ["start", "end"],
       "properties": {
-        "start": {
-          "$ref": "#/$defs/timestamp"
-        },
-        "end": {
-          "$ref": "#/$defs/timestamp"
-        }
+        "start": {"$ref": "#/$defs/timestamp"},
+        "end": {"$ref": "#/$defs/timestamp"}
       }
     },
-    "createdAt": {
-      "$ref": "#/$defs/timestamp"
-    },
+    "createdAt": {"$ref": "#/$defs/timestamp"},
     "artifacts": {
       "type": "array",
       "minItems": 1,
@@ -101,13 +79,7 @@
           {
             "$ref": "https://perfeng.dev/schemas/artifact/v1/artifact-reference.schema.json"
           },
-          {
-            "properties": {
-              "kind": {
-                "const": "raw"
-              }
-            }
-          }
+          {"properties": {"kind": {"const": "raw"}}}
         ]
       }
     }

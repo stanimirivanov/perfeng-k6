@@ -1,6 +1,6 @@
 # Workload definitions and raw manifests
 
-This slice adds workload/v1 definitions and an offline raw-result/v1 assembler.
+This repository provides workload/v1 definitions and an offline raw-result/v2 assembler.
 It does not upload files, query a registry, verify remote objects, or infer a
 scientific verdict. A valid manifest does not mean the run passed or delivered
 its planned workload.
@@ -42,7 +42,7 @@ The request is a JSON object with exactly these fields:
 | runId | Actual platform run ID, in perf-YYYYMMDD-HHMMSS-xxxxxxxx form |
 | testId | checkout-api, search-api, or account-api matching the workload |
 | workloadFile | Relative path to the frozen workload definition |
-| producer | name: k6, version: 2.2.0, and image: the actual OCI reference pinned by SHA-256 |
+| producer | name: k6, version: 2.2.0, and artifact containing kind: oci-image plus the actual OCI reference pinned by SHA-256 |
 | measurementWindow | Observed start and end of measurement, not planned duration or process start/finish |
 | receipts | Exactly two objects, each containing file and artifact |
 
@@ -86,9 +86,10 @@ on retry. The CLI returns nonzero for invalid input or an output collision.
 It does not rewrite raw files or contact their URIs.
 
 The output includes the SHA-256 of the exact workload-definition bytes, both
-verified artifact references, supplied provenance, and the manifest creation
-time. Creation cannot precede measurement end. Caller-supplied IDs and receipts
-are reused; the assembler does not silently allocate replacement identities.
+verified artifact references, supplied OCI execution provenance, and the manifest
+creation time. It uses schemaVersion 2 and contractsVersion 0.13.0. Creation
+cannot precede measurement end. Caller-supplied IDs and receipts are reused; the
+assembler does not silently allocate replacement identities.
 
 Failure with retained measurements can still have a manifest; there is no
 execution-success field. Execution errors, k6 threshold exits, measurement
@@ -100,7 +101,7 @@ Keep incomplete raw evidence for diagnosis instead of fabricating a result.
 
 Validation uses Ajv's Draft 2020-12 implementation and format checks, with all
 schema references resolved locally. The locked snapshot includes the five
-schemas in the reference dependency chain and the upstream Apache license.
+raw-result/v2 schemas in the reference dependency chain and the upstream Apache license.
 Neither a sibling repository nor Python is required. npm ci installs tooling;
 subsequent validation and assembly are offline.
 
