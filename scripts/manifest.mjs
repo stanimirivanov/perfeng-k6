@@ -5,7 +5,7 @@ import { resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { compile, containedFile, lock, parseJson, root, schemaId, validate, verifyWorkload } from './contracts.mjs';
 
-const raw = schemaId('raw-result/v1/raw-result.schema.json');
+const raw = schemaId('raw-result/v2/raw-result.schema.json');
 const validTimestamp = compile({ type: 'string', format: 'date-time' });
 const requestValidator = compile({
   type: 'object', additionalProperties: false,
@@ -59,7 +59,8 @@ export async function buildManifest(request, directory, now = new Date().toISOSt
     throw new Error('Test identity does not match workload');
   }
   if (request.producer.name !== 'k6' ||
-      request.producer.version !== readFileSync(resolve(root, '.k6-version'), 'utf8').trim()) {
+      request.producer.version !== readFileSync(resolve(root, '.k6-version'), 'utf8').trim() ||
+      request.producer.artifact.kind !== 'oci-image') {
     throw new Error('Unsupported capture producer/version');
   }
   const ids = new Set(), uris = new Set(), paths = new Set(), formats = new Set();
@@ -112,13 +113,13 @@ export async function buildManifest(request, directory, now = new Date().toISOSt
     artifacts.push({ ...artifact });
   }
   const result = {
-    schemaVersion: 1, kind: 'RawResult', contractsVersion: lock.version,
+    schemaVersion: 2, kind: 'RawResult', contractsVersion: lock.version,
     runId: request.runId, testId: request.testId,
     workload: { id: workload.id, version: workload.version, sha256 },
     producer: request.producer, measurementWindow: request.measurementWindow,
     createdAt: now, artifacts
   };
-  validate('raw-result/v1/raw-result.schema.json', result);
+  validate('raw-result/v2/raw-result.schema.json', result);
   return result;
 }
 

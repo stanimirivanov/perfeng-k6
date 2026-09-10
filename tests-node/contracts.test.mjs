@@ -17,7 +17,13 @@ function fixture() {
   const runId = 'perf-20260902-120000-a1b2c3d4';
   const request = {
     runId, testId: 'checkout-api', workloadFile: 'definitions/smoke/checkout.json',
-    producer: { name: 'k6', version: '2.2.0', image: 'example.invalid/perfeng-k6@sha256:' + 'a'.repeat(64) },
+    producer: {
+      name: 'k6', version: '2.2.0',
+      artifact: {
+        kind: 'oci-image',
+        image: 'example.invalid/perfeng-k6@sha256:' + 'a'.repeat(64)
+      }
+    },
     measurementWindow: { start: '2026-09-02T12:00:00Z', end: '2026-09-02T12:02:00Z' },
     receipts: [
       { file: 'summary.json', artifact: {
@@ -66,8 +72,10 @@ test('manifest conforms to pinned contract, uses exact hashes, and leaves raw fi
   const { directory, request } = fixture();
   const before = request.receipts.map(r => readFileSync(join(directory, r.file)));
   const manifest = await buildManifest(request, directory, now);
-  validate('raw-result/v1/raw-result.schema.json', manifest);
-  assert.equal(manifest.contractsVersion, '0.4.0');
+  validate('raw-result/v2/raw-result.schema.json', manifest);
+  assert.equal(manifest.schemaVersion, 2);
+  assert.equal(manifest.contractsVersion, '0.13.0');
+  assert.deepEqual(manifest.producer, request.producer);
   assert.equal(manifest.workload.sha256, digest(readFileSync(join(directory, request.workloadFile))));
   assert.deepEqual(manifest.artifacts, request.receipts.map(r => r.artifact));
   assert(!Object.hasOwn(manifest, 'status'));
@@ -86,7 +94,11 @@ for (const [label, change] of [
   ['local URI', f => { f.request.receipts[0].artifact.uri = 'file:///tmp/result'; }],
   ['parent traversal', f => { f.request.receipts[0].file = '../summary.json'; }],
   ['normalized artifact', f => { f.request.receipts[0].artifact.kind = 'normalized'; }],
-  ['floating image', f => { f.request.producer.image = 'example.invalid/perfeng-k6:latest'; }],
+  ['floating image', f => { f.request.producer.artifact.image = 'example.invalid/perfeng-k6:latest'; }],
+  ['native producer artifact', f => { f.request.producer.artifact = {
+    kind: 'source-checkout', repository: 'https://github.com/example/perfeng-k6',
+    gitSha: 'a'.repeat(40), dependencyLock: { path: 'package-lock.json', sha256: 'b'.repeat(64) }
+  }; }],
   ['unknown producer version', f => { f.request.producer.version = '0.48.0'; }],
   ['wrong test identity', f => { f.request.testId = 'account-api'; }],
   ['missing reference', f => { f.request.receipts.pop(); }],

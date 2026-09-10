@@ -96,10 +96,12 @@ cooldown. The legacy
 catalogue is retained under legacy/ as migration input, not advertised as a valid
 current catalogue. Its names and metrics require explicit mapping.
 
-The manifest builder validates against five vendored schemas from the pinned
-perfeng-contracts 0.4.0 snapshot recorded in contracts.lock.json. It checks every
-schema checksum before use and never downloads schemas at runtime. Update the
-snapshot only through a reviewed dependency change; do not edit vendored schemas.
+The manifest builder emits raw-result/v2 and validates against five vendored
+schemas from the pinned perfeng-contracts 0.13.0 snapshot recorded in
+contracts.lock.json. Its producer provenance identifies the digest-pinned OCI
+runner through `producer.artifact`. It checks every schema checksum before use
+and never downloads schemas at runtime. Update the snapshot only through a
+reviewed dependency change; do not edit vendored schemas.
 
 Uploads, image/run attestation, resolved execution-configuration capture, and
 automatic measurement-phase instrumentation remain adapter/integration work.
