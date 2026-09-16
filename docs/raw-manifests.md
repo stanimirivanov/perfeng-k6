@@ -1,5 +1,17 @@
 # Workload definitions and raw manifests
 
+## TL;DR
+
+- A workload definition binds exact native k6 configuration bytes to an immutable version and
+  checksum.
+- Assemble raw-result/v2 only from a frozen capture, original summary/points and verified storage
+  receipts.
+- The assembler validates local bytes and contracts; it does not upload, retrieve or attest remote
+  objects.
+- Runtime overrides and the true measurement interval require separate explicit capture.
+- Missing or incomplete evidence remains a failed/incomplete run, never an invented successful
+  manifest.
+
 This repository provides workload/v1 definitions and an offline raw-result/v2 assembler.
 It does not upload files, query a registry, verify remote objects, or infer a
 scientific verdict. A valid manifest does not mean the run passed or delivered
@@ -37,14 +49,14 @@ Use a frozen capture directory containing:
 
 The request is a JSON object with exactly these fields:
 
-| Field | Required value |
-| --- | --- |
-| runId | Actual platform run ID, in perf-YYYYMMDD-HHMMSS-xxxxxxxx form |
-| testId | checkout-api, search-api, or account-api matching the workload |
-| workloadFile | Relative path to the frozen workload definition |
-| producer | name: k6, version: 2.2.0, and artifact containing kind: oci-image plus the actual OCI reference pinned by SHA-256 |
-| measurementWindow | Observed start and end of measurement, not planned duration or process start/finish |
-| receipts | Exactly two objects, each containing file and artifact |
+| Field             | Required value                                                                                                    |
+| ----------------- | ----------------------------------------------------------------------------------------------------------------- |
+| runId             | Actual platform run ID, in perf-YYYYMMDD-HHMMSS-xxxxxxxx form                                                     |
+| testId            | checkout-api, search-api, or account-api matching the workload                                                    |
+| workloadFile      | Relative path to the frozen workload definition                                                                   |
+| producer          | name: k6, version: 2.2.0, and artifact containing kind: oci-image plus the actual OCI reference pinned by SHA-256 |
+| measurementWindow | Observed start and end of measurement, not planned duration or process start/finish                               |
+| receipts          | Exactly two objects, each containing file and artifact                                                            |
 
 Each receipt.file is relative to the capture root. Each receipt.artifact is a
 complete [artifact/v1 reference](../vendor/contracts/schemas/artifact/v1/artifact-reference.schema.json):
@@ -52,10 +64,10 @@ id, runId, kind, uri, sha256, sizeBytes, mediaType, and format. The storage adap
 assigns immutable UUIDs and returns the actual stored-byte checksum and size.
 Both artifacts use kind: raw and the request's run ID.
 
-| Payload | mediaType | format |
-| --- | --- | --- |
-| Summary | application/json | k6-summary-json |
-| Individual points | application/x-ndjson | k6-json-points |
+| Payload           | mediaType            | format          |
+| ----------------- | -------------------- | --------------- |
+| Summary           | application/json     | k6-summary-json |
+| Individual points | application/x-ndjson | k6-json-points  |
 
 URIs must be stable S3 or HTTPS object locations without credentials, queries,
 or fragments. Signed URLs and local paths are not artifact locations. Require

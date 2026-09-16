@@ -22,6 +22,7 @@ jobs:
           tar -xzf "$RUNNER_TEMP/k6.tar.gz" -C "$RUNNER_TEMP"
           echo "$RUNNER_TEMP/k6-v${version}-linux-amd64" >> "$GITHUB_PATH"
       - run: npm ci --ignore-scripts
+      - run: npm run format:check
       - run: npm run validate
       - run: npm test
       - name: Build standalone image

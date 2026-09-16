@@ -1,7 +1,12 @@
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import test from 'node:test';
-import { inventory, parseHashes, publishedReference, validateImageName } from '../scripts/image.mjs';
+import {
+  inventory,
+  parseHashes,
+  publishedReference,
+  validateImageName,
+} from '../scripts/image.mjs';
 
 test('base image is digest-pinned and execution is explicitly non-root', () => {
   const file = readFileSync(new URL('../Dockerfile', import.meta.url), 'utf8');
@@ -11,11 +16,16 @@ test('base image is digest-pinned and execution is explicitly non-root', () => {
 
 test('inventory covers all runtime sources and workload definitions', () => {
   const files = inventory();
-  for (const path of ['.k6-version', 'lib/config.js', 'tests/checkout/scenario.js',
-    'workloads/smoke/checkout.json', 'definitions/smoke/checkout.json']) {
+  for (const path of [
+    '.k6-version',
+    'lib/config.js',
+    'tests/checkout/scenario.js',
+    'workloads/smoke/checkout.json',
+    'definitions/smoke/checkout.json',
+  ]) {
     assert.match(files[path], /^[0-9a-f]{64}$/);
   }
-  assert.equal(Object.keys(files).filter(path => path.startsWith('definitions/')).length, 12);
+  assert.equal(Object.keys(files).filter((path) => path.startsWith('definitions/')).length, 12);
 });
 
 test('image inventory parser rejects malformed or duplicate records', () => {
@@ -37,8 +47,14 @@ test('registry manifest digest is required, not an image ID or tag', () => {
   const repository = 'ghcr.io/stanimirivanov/perfeng-k6';
   const reference = repository + '@sha256:' + 'a'.repeat(64);
   assert.equal(publishedReference([reference], repository), reference);
-  for (const values of [null, [], ['sha256:' + 'a'.repeat(64)], [repository + ':latest'],
-    [repository + '@sha256:bad'], [reference, reference]]) {
+  for (const values of [
+    null,
+    [],
+    ['sha256:' + 'a'.repeat(64)],
+    [repository + ':latest'],
+    [repository + '@sha256:bad'],
+    [reference, reference],
+  ]) {
     assert.throws(() => publishedReference(values, repository));
   }
   assert.throws(() => publishedReference([reference], 'other.example/perfeng-k6'));

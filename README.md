@@ -1,18 +1,38 @@
 # perfeng-k6
 
+## TL;DR
+
+- Provides versioned k6 API scenarios, native load profiles and immutable workload definitions.
+- Executes only against an explicitly supplied authorized target; loopback is the safe default.
+- Retains original summaries and sample points and assembles contract-valid raw-result manifests.
+- Does not schedule runs, upload artifacts, normalize metrics, select baselines or make performance
+  decisions.
+- Uses k6 2.2.0 and Node.js 24.18.0. Install with `npm ci --ignore-scripts` and run
+  `make validate`.
+
 Standalone k6 API scenarios extracted from performance-platform. This repository
 owns load generation, not scheduling, baselines, normalization, or performance
 decisions. Requires k6 **2.2.0** and Node.js **24.18.0** for local tooling.
 Node tooling uses locked Ajv dependencies for offline contract validation.
 There is no Python project in this repository.
 
-## Validate
+## Development and validation
+
+Contributor workflow and repository policy are defined in
+[CONTRIBUTING.md](CONTRIBUTING.md). Runner-specific design and verification rules are in the
+[engineering standards](docs/development/engineering-standards.md), and durable decisions are
+recorded in [ADRs](docs/decisions/README.md).
+
+Install the exact locked dependencies, then run the portable harness:
 
 ```sh
 npm ci --ignore-scripts
-npm run validate
-npm test
+make validate
 ```
+
+The equivalent individual checks are `npm run format:check`, `npm run validate`, and `npm test`.
+`make image` separately builds and verifies the local runner image when image-affecting files
+change.
 
 Validation inspects all 12 profile/scenario combinations using the pinned k6
 binary. Tests run checkout, search, and account flows against an ephemeral
