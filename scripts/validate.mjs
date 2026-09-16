@@ -9,14 +9,18 @@ checkVersion();
 function canonical(value) {
   if (Array.isArray(value)) return value.map(canonical);
   if (value && typeof value === 'object') {
-    return Object.fromEntries(Object.entries(value)
-      .filter(([, item]) => item !== null)
-      .map(([key, item]) => [key, canonical(item)]));
+    return Object.fromEntries(
+      Object.entries(value)
+        .filter(([, item]) => item !== null)
+        .map(([key, item]) => [key, canonical(item)]),
+    );
   }
   // k6 renders 1m as 1m0s and adds null defaults when resolving config.
   if (typeof value === 'string' && /^(?:\d+(?:\.\d+)?(?:ms|s|m|h))+$/.test(value)) {
-    return [...value.matchAll(/(\d+(?:\.\d+)?)(ms|s|m|h)/g)]
-      .reduce((sum, [, amount, unit]) => sum + Number(amount) * { ms: 0.001, s: 1, m: 60, h: 3600 }[unit], 0);
+    return [...value.matchAll(/(\d+(?:\.\d+)?)(ms|s|m|h)/g)].reduce(
+      (sum, [, amount, unit]) => sum + Number(amount) * { ms: 0.001, s: 1, m: 60, h: 3600 }[unit],
+      0,
+    );
   }
   return value;
 }
@@ -31,7 +35,11 @@ for (const [test, entry] of Object.entries(registry.testScenarios)) {
     assert.equal(workload.profile, profile);
     const config = resolve(root, `workloads/${profile}/${test}.json`);
     const expected = JSON.parse(readFileSync(config, 'utf8'));
-    const result = spawnSync('k6', ['inspect', '--execution-requirements', '--config', config, script], { encoding: 'utf8', cwd: root });
+    const result = spawnSync(
+      'k6',
+      ['inspect', '--execution-requirements', '--config', config, script],
+      { encoding: 'utf8', cwd: root },
+    );
     assert.equal(result.status, 0, result.stderr);
     const actual = JSON.parse(result.stdout);
     assert.deepEqual(canonical(actual.scenarios), canonical(expected.scenarios));

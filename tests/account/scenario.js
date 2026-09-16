@@ -1,10 +1,7 @@
 import { check, sleep } from 'k6';
 import http from 'k6/http';
 import { generateRandomId, getApiUrl, getHeaders, THINK_TIME } from '../../lib/config.js';
-import {
-  accountOperationDuration,
-  transactionErrorRate,
-} from '../../lib/metrics.js';
+import { accountOperationDuration, transactionErrorRate } from '../../lib/metrics.js';
 
 export default function () {
   const headers = getHeaders();
@@ -19,11 +16,13 @@ export default function () {
 
   // Update user preferences
   const updateResponse = http.put(
-      getApiUrl(`/users/${userId}/preferences`),
-      JSON.stringify({ theme: 'dark', language: 'en' }),
-      { headers },
+    getApiUrl(`/users/${userId}/preferences`),
+    JSON.stringify({ theme: 'dark', language: 'en' }),
+    { headers },
   );
-  const preferencesUpdated = check(updateResponse, { 'preferences updated': (r) => r.status === 200 });
+  const preferencesUpdated = check(updateResponse, {
+    'preferences updated': (r) => r.status === 200,
+  });
 
   accountOperationDuration.add(Date.now() - startTime);
   transactionErrorRate.add(!(profileLoaded && preferencesUpdated));

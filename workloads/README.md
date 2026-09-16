@@ -1,5 +1,14 @@
 # Native k6 workload profiles
 
+## TL;DR
+
+- Native profile JSON is executable k6 configuration; descriptions are not defaults or policy.
+- Open and closed workload models behave differently under target slowdown.
+- Every profile has a matching immutable workload definition and configuration checksum.
+- Current ramps are part of measurement; the observed manifest window is captured separately.
+- Add profiles by updating configuration, registry, definition/version/checksum, tests and docs
+  together.
+
 Each JSON file is a native k6 --config input. registry.json lists the supported
 scenario/profile combinations; its descriptions and typical rates are descriptive,
 not executable defaults. The scenario JSON file is authoritative.

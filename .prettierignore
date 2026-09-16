@@ -1,0 +1,13 @@
+# Dependencies, outputs and repository metadata
+.git/
+node_modules/
+dist/
+results/
+
+# These files are immutable identities or pinned upstream bytes. Formatting them
+# requires an explicit version/checksum update, not a repository-wide formatter.
+contracts.lock.json
+definitions/
+legacy/
+vendor/
+workloads/**/*.json

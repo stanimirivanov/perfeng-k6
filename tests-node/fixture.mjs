@@ -24,8 +24,10 @@ export async function fixture(mode = 'ok') {
       status = 404;
     }
     response.writeHead(status, { 'Content-Type': 'application/json' });
-    response.end(mode === 'malformed-order' && path === '/api/v1/checkout' ? 'not-json' : JSON.stringify(body));
+    response.end(
+      mode === 'malformed-order' && path === '/api/v1/checkout' ? 'not-json' : JSON.stringify(body),
+    );
   });
-  await new Promise(resolve => server.listen(0, '127.0.0.1', resolve));
+  await new Promise((resolve) => server.listen(0, '127.0.0.1', resolve));
   return { server, url: `http://127.0.0.1:${server.address().port}` };
 }

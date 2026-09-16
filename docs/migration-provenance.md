@@ -1,5 +1,14 @@
 # Source provenance
 
+## TL;DR
+
+- Active scenarios originated in `performance-platform` commit
+  `57c1b5074898d4d86476e8b4f99c19eff3a77018` under `tests/k6/`.
+- Standalone tooling and packaging replaced prototype repository infrastructure.
+- The legacy catalogue remains migration input, not a valid current catalogue.
+- Behavior corrections and deliberate omissions are listed below for auditability.
+- This document records provenance; it does not prove imported Git ancestry.
+
 Source repository: performance-platform.
 Source commit: 57c1b5074898d4d86476e8b4f99c19eff3a77018.
 Source subtree: tests/k6/.

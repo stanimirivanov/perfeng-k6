@@ -1,5 +1,14 @@
 # Runner image publication
 
+## TL;DR
+
+- Build and verify the Linux AMD64 runner locally before publication.
+- Publish only from the manual workflow on `main` and promote only its verified immutable GHCR
+  digest.
+- The image runs as UID/GID 12345 and contains no Node tooling, credentials or result data.
+- Private GHCR images require separate pull credentials for kind/Kubernetes nodes.
+- Publication does not change package visibility, sign the image or deploy a workload.
+
 The environment must use the registry manifest digest of the runner image,
 not the k6 base digest, a mutable tag, or Docker's local image/config ID.
 This slice produces that prerequisite; it does not launch Kubernetes Jobs or
@@ -7,11 +16,11 @@ upload measurements.
 
 ## Build and validate locally
 
-~~~sh
+```sh
 npm ci --ignore-scripts
 docker build -t perfeng-k6:local-check .
 npm run image:verify -- perfeng-k6:local-check
-~~~
+```
 
 Use a fresh tag if that local tag already identifies work you need to preserve.
 Verification runs containers with networking disabled, a read-only root filesystem,
