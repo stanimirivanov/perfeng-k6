@@ -18,13 +18,14 @@ jobs:
       contents: read
       packages: write
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           persist-credentials: false
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         with:
           node-version-file: .node-version
-      - run: npm ci --ignore-scripts
+          cache: npm
+      - run: make bootstrap
       - name: Build Linux AMD64 runner
         shell: bash
         run: |
@@ -44,8 +45,7 @@ jobs:
           docker cp "$task_container:/usr/bin/k6" "$RUNNER_TEMP/k6"
           chmod +x "$RUNNER_TEMP/k6"
           export PATH="$RUNNER_TEMP:$PATH"
-          npm run validate
-          npm test
+          make verify
       - name: Authenticate only for an explicitly requested publication
         if: inputs.publish
         shell: bash

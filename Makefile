@@ -1,30 +1,63 @@
 IMAGE ?= perfeng-k6:local-check
+NPM ?= npm
 
-.PHONY: help fmt fmt-check check test validate image
+.PHONY: help bootstrap doctor fmt fmt-check docs-check architecture-check check test verify vuln license supply-chain validate image
 
 help:
 	@echo perfeng-k6 engineering command surface
-	@echo "  make fmt        Format repository-owned text and source files"
+	@echo "  make bootstrap  Install the exact locked Node dependencies"
+	@echo "  make doctor  Report Git, Node, npm, k6 and Make versions"
+	@echo "  make fmt  Format repository-owned text and source files"
 	@echo "  make fmt-check  Verify formatting without changing files"
-	@echo "  make check      Run formatting and workload-definition checks"
-	@echo "  make test       Run the Node integration and contract tests"
-	@echo "  make validate   Run all portable non-image checks"
-	@echo "  make image      Build and verify IMAGE (default: perfeng-k6:local-check)"
+	@echo "  make docs-check  Verify documentation and contribution policy"
+	@echo "  make architecture-check  Verify k6 runtime/tooling import boundaries"
+	@echo "  make check  Run deterministic formatting, policy and workload checks"
+	@echo "  make test  Run Node integration, contract and harness tests"
+	@echo "  make verify  Run the fast development feedback loop"
+	@echo "  make supply-chain  Run vulnerability and license checks"
+	@echo "  make validate  Run all portable non-image acceptance checks"
+	@echo "  make image  Build and verify IMAGE (default: perfeng-k6:local-check)"
+
+bootstrap:
+	$(NPM) ci --ignore-scripts
+
+doctor:
+	@git --version
+	@node --version
+	@$(NPM) --version
+	@k6 version
+	@$(MAKE) --version
 
 fmt:
-	npm run format
+	$(NPM) run format
 
 fmt-check:
-	npm run format:check
+	$(NPM) run format:check
 
-check: fmt-check
-	npm run validate
+docs-check:
+	$(NPM) run docs:check
+
+architecture-check:
+	$(NPM) run architecture:check
+
+check: fmt-check docs-check architecture-check
+	$(NPM) run validate
 
 test:
-	npm test
+	$(NPM) test
 
-validate: check test
+verify: check test
+
+vuln:
+	$(NPM) audit --audit-level=high
+
+license:
+	$(NPM) run licenses:check
+
+supply-chain: vuln license
+
+validate: verify supply-chain
 
 image:
 	docker build -t $(IMAGE) .
-	npm run image:verify -- $(IMAGE)
+	$(NPM) run image:verify -- $(IMAGE)

@@ -37,6 +37,10 @@ Use SOLID and patterns as reasoning tools, not quotas. Prefer explicit scenario 
 validation functions and direct data flow over generic runners, managers or speculative plugin
 systems.
 
+`make architecture-check` inventories runtime modules and rejects Node built-ins, npm packages,
+and imports into tooling from `lib/` and `tests/`. Keep that sensor synchronized when adding a new
+runtime source root; passing Node tests alone does not prove that code is executable by k6.
+
 ## Target and load safety
 
 - Only generate load against a target the operator owns or is explicitly authorized to test.
@@ -140,12 +144,14 @@ systems.
   runtime overrides, expected artifacts, limitations and caller responsibilities.
 - Comments explain safety, load-model and measurement decisions, not syntax.
 - Long documents follow the TL;DR policy in CONTRIBUTING.
-- Runtime dependencies require a current need, compatible license, maintained release, exact lock,
-  security review and a proportionate replacement boundary.
+- Runtime dependencies follow the
+  [dependency policy](dependency-policy.md): they require a current need, compatible license,
+  maintained release, exact lock, security review and a proportionate replacement boundary.
 - Development tooling MUST NOT enter the runner image or runtime dependency graph.
 
 ## Required verification
 
-Run the exact portable checks in CONTRIBUTING. Scenario, profile, definition, Dockerfile or image
-inventory changes also require the local image build and verification. Non-loopback tests require
-separate explicit authorization and are never implied by this repository's normal validation.
+Run `make verify` and `make validate` as defined by the [harness guide](harness.md). Scenario,
+profile, definition, Dockerfile or image-inventory changes also require `make image`.
+Non-loopback tests require separate explicit authorization and are never implied by this
+repository's normal validation.

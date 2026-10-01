@@ -16,9 +16,9 @@ MUST, SHOULD and MAY have the meanings defined there.
 1. You MUST read [CONTRIBUTING.md](CONTRIBUTING.md), especially its ambiguity, issue-timing,
    verification and external-side-effect rules.
 2. You MUST inspect the branch and working tree and preserve pre-existing work.
-3. You MUST read the relevant
-   [engineering standards](docs/development/engineering-standards.md), workload and manifest
-   guides, image guide, contract lock, and accepted [ADRs](docs/decisions/README.md).
+3. You MUST use the [documentation map](docs/README.md) to read the relevant engineering,
+   workload, manifest, image, contract, and decision guidance. Do not bulk-read unrelated guides
+   or decisions.
 4. You MUST use repository-local checks and MUST NOT claim an unavailable or unexecuted check
    passed.
 
@@ -67,6 +67,10 @@ baseline selection or performance decisions.
 - Runtime code and manifest assembly remain offline after dependencies are installed.
 
 Follow the engineering standards and relevant README sections.
+
+The [coding harness guide](docs/development/harness.md) defines command tiers and feedback
+sensors. New runtime or tooling paths MUST join the executable boundary policy, and new recurring
+guidance MUST be routed from the documentation map.
 
 ## Quality and documentation
 

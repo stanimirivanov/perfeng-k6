@@ -26,7 +26,10 @@ Lowercase guidance does not silently create another normative level.
 | :------------------------------------------------------------ | :------------------------------------------------------------------------------------------------------------------------ |
 | Contributor workflow, issue timing, escalation and completion | This document                                                                                                             |
 | Concise contributor and agent entry point                     | [AGENTS.md](AGENTS.md)                                                                                                    |
+| Task-oriented documentation routing                           | [docs/README.md](docs/README.md)                                                                                          |
+| Coding harness and verification tiers                         | [docs/development/harness.md](docs/development/harness.md)                                                                |
 | k6 and JavaScript engineering                                 | [docs/development/engineering-standards.md](docs/development/engineering-standards.md)                                    |
+| Dependency admission and supply-chain policy                  | [docs/development/dependency-policy.md](docs/development/dependency-policy.md)                                            |
 | Architecture decisions                                        | [docs/decisions](docs/decisions/README.md)                                                                                |
 | Cross-repository milestones                                   | [perfeng-environment roadmap](https://github.com/stanimirivanov/perfeng-environment/blob/main/docs/roadmap/milestones.md) |
 | Supported behavior and exact commands                         | [README.md](README.md)                                                                                                    |
@@ -175,15 +178,17 @@ other mutations MUST remain within requested scope and authority.
 Run every applicable required check:
 
 ```sh
-npm ci --ignore-scripts
-npm run format:check
-npm run validate
-npm test
+make bootstrap
+make verify
+make validate
 ```
 
-`make validate` wraps the portable checks after dependencies are installed. Scenario, profile,
-definition, Dockerfile or image-inventory changes MUST also build and verify the runner image as
-documented. Tests MUST use the pinned k6 version.
+`make verify` is the offline inner loop after bootstrap when the pinned k6 binary is installed.
+`make validate` adds the network-backed supply-chain checks. Scenario, profile, definition,
+Dockerfile or image-inventory changes MUST also run `make image`. Tests MUST use the pinned k6
+version. Exact setup and command tiers are documented in the
+[developer quickstart](docs/development/developer-quickstart.md) and
+[harness guide](docs/development/harness.md).
 
 When a check cannot run because of sandbox, platform, network, credentials, Docker, k6 or another
 environmental constraint, report the exact command as **not run**, the blocker and attempts, checks
