@@ -14,6 +14,20 @@ test('base image is digest-pinned and execution is explicitly non-root', () => {
   assert.match(file, /^USER 12345:12345$/m);
 });
 
+test('CI verifies the pinned k6 release archive before extraction', () => {
+  const checksum = readFileSync(
+    new URL('../.k6-linux-amd64.sha256', import.meta.url),
+    'utf8',
+  ).trim();
+  const workflow = readFileSync(
+    new URL('../.github/workflows/validate.yml', import.meta.url),
+    'utf8',
+  );
+  assert.match(checksum, /^[0-9a-f]{64}$/);
+  assert.match(workflow, /< \.k6-linux-amd64\.sha256/);
+  assert.match(workflow, /sha256sum --check/);
+});
+
 test('inventory covers all runtime sources and workload definitions', () => {
   const files = inventory();
   for (const path of [

@@ -17,10 +17,12 @@ upload measurements.
 ## Build and validate locally
 
 ```sh
-npm ci --ignore-scripts
-docker build -t perfeng-k6:local-check .
-npm run image:verify -- perfeng-k6:local-check
+make bootstrap
+make image
 ```
+
+Set `IMAGE=registry/name:tag` when the default
+`perfeng-k6:local-check` name is unsuitable.
 
 Use a fresh tag if that local tag already identifies work you need to preserve.
 Verification runs containers with networking disabled, a read-only root filesystem,

@@ -5,27 +5,66 @@ on:
     branches: [main]
 permissions:
   contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   validate:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v7
         with:
           node-version-file: .node-version
+          cache: npm
       - name: Install pinned k6
         shell: bash
         run: |
           set -euo pipefail
           version="$(cat .k6-version)"
           curl --fail --location --output "$RUNNER_TEMP/k6.tar.gz" "https://github.com/grafana/k6/releases/download/v${version}/k6-v${version}-linux-amd64.tar.gz"
+          expected="$(tr -d '\r\n' < .k6-linux-amd64.sha256)"
+          echo "${expected}  $RUNNER_TEMP/k6.tar.gz" | sha256sum --check
           tar -xzf "$RUNNER_TEMP/k6.tar.gz" -C "$RUNNER_TEMP"
           echo "$RUNNER_TEMP/k6-v${version}-linux-amd64" >> "$GITHUB_PATH"
-      - run: npm ci --ignore-scripts
-      - run: npm run format:check
-      - run: npm run validate
-      - run: npm test
+      - name: Resolve pinned dependencies
+        run: make bootstrap
+      - name: Run fast verification suite
+        run: make verify
+
+  vulnerabilities:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .node-version
+          cache: npm
+      - name: Resolve pinned dependencies
+        run: make bootstrap
+      - name: Run supply-chain suite
+        run: make supply-chain
+
+  image:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .node-version
+          cache: npm
+      - name: Resolve pinned dependencies
+        run: make bootstrap
       - name: Build standalone image
-        run: |
-          docker build -t perfeng-k6:ci .
-          node scripts/image.mjs verify perfeng-k6:ci
+        run: make image IMAGE=perfeng-k6:ci

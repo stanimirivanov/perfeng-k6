@@ -9,7 +9,10 @@
   "scripts": {
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "test": "node --test tests-node/runner.test.mjs tests-node/contracts.test.mjs tests-node/image.test.mjs",
+    "test": "node --test tests-node/runner.test.mjs tests-node/contracts.test.mjs tests-node/image.test.mjs tests-node/repo-check.test.mjs tests-node/architecture.test.mjs tests-node/licenses.test.mjs",
+    "docs:check": "node scripts/repo-check.mjs",
+    "architecture:check": "node scripts/architecture.mjs",
+    "licenses:check": "node scripts/licenses.mjs",
     "image:verify": "node scripts/image.mjs verify",
     "validate": "node scripts/validate.mjs",
     "run": "node scripts/run.mjs",
@@ -21,6 +24,7 @@
     "ajv-formats": "3.0.1"
   },
   "devDependencies": {
+    "acorn": "8.18.0",
     "prettier": "3.9.6"
   }
 }

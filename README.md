@@ -7,8 +7,8 @@
 - Retains original summaries and sample points and assembles contract-valid raw-result manifests.
 - Does not schedule runs, upload artifacts, normalize metrics, select baselines or make performance
   decisions.
-- Uses k6 2.2.0 and Node.js 24.18.0. Install with `npm ci --ignore-scripts` and run
-  `make validate`.
+- Uses k6 2.2.0 and Node.js 24.18.0. Start from the
+  [documentation map](docs/README.md), run `make bootstrap`, and use `make verify`.
 
 Standalone k6 API scenarios extracted from performance-platform. This repository
 owns load generation, not scheduling, baselines, normalization, or performance
@@ -21,18 +21,20 @@ There is no Python project in this repository.
 Contributor workflow and repository policy are defined in
 [CONTRIBUTING.md](CONTRIBUTING.md). Runner-specific design and verification rules are in the
 [engineering standards](docs/development/engineering-standards.md), and durable decisions are
-recorded in [ADRs](docs/decisions/README.md).
+recorded in [ADRs](docs/decisions/README.md). The
+[coding harness](docs/development/harness.md) defines command cost and ownership.
 
 Install the exact locked dependencies, then run the portable harness:
 
 ```sh
-npm ci --ignore-scripts
+make bootstrap
+make verify
 make validate
 ```
 
-The equivalent individual checks are `npm run format:check`, `npm run validate`, and `npm test`.
-`make image` separately builds and verifies the local runner image when image-affecting files
-change.
+`make verify` runs formatting, repository policy, architecture, workload, and test feedback.
+`make validate` adds supply-chain checks. `make image` separately builds and verifies the local
+runner image when image-affecting files change.
 
 Validation inspects all 12 profile/scenario combinations using the pinned k6
 binary. Tests run checkout, search, and account flows against an ephemeral
