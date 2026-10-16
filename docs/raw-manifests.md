@@ -32,8 +32,10 @@ includes definitions/ but not the Node assembler or its dependencies.
 
 Changing configuration bytes, including formatting or line endings, requires a
 new hash and workload version. Existing definitions are immutable identities.
-Runtime BASE_URL, API_VERSION, THINK_TIME, auth references, random input choices,
-and native k6 environment overrides are not captured by a static profile hash.
+Runtime BASE_URL, API_VERSION, THINK_TIME, auth references and random input
+choices are not captured by a static profile hash. Bundled scenarios reject
+native `K6_*` environment variables; deployment adapters must also constrain
+command-line options, which can override the reviewed profile.
 A production adapter must preserve a separate immutable resolved-configuration
 snapshot, record secret references rather than values, and control randomness.
 Do not present a modified or fixture override run as the published workload.

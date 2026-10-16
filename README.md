@@ -68,9 +68,11 @@ for fixture tests. Record such overrides with your run configuration.
 
 The wrapper verifies the k6 version, checks the scenario/profile registry,
 retains the k6 exit status (including threshold failure 99), and writes
-summary.json plus points.jsonl. Native k6 environment options can still override
-profile settings; use a controlled environment for reproducible runs. Do not
-set options that disable thresholds or summaries in verification runs.
+summary.json plus points.jsonl. The bundled scenarios reject any `K6_*`
+environment variable at initialization because native k6 options such as
+`K6_VUS` can replace the reviewed profile. This applies to both the Node wrapper
+and direct execution of the runner image. Keep execution flags fixed as well:
+k6 command-line options have higher precedence than `--config`.
 
 The runner verifies the selected workload definition and configuration checksum
 before starting. Raw output is unmodified k6 output, not normalized metrics.
