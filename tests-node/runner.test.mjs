@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { spawn } from 'node:child_process';
+import { spawn, spawnSync } from 'node:child_process';
 import { mkdtempSync, readFileSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
@@ -88,6 +88,39 @@ test('reject unknown scenarios/profiles and existing output directories before r
   assert.throws(() => run('../checkout', 'smoke', temporary), /Unsupported/);
   assert.throws(() => run('account', 'capacity', temporary), /Unsupported/);
   assert.throws(() => run('checkout', 'smoke', temporary), /EEXIST/);
+});
+
+test('native k6 option variables cannot replace reviewed profiles', () => {
+  const registry = JSON.parse(readFileSync(join(root, 'workloads/registry.json'), 'utf8'));
+  const env = {
+    ...fixtureEnvironment,
+    BASE_URL: 'http://127.0.0.1:9',
+    AUTH_TOKEN: 'secret-value-must-not-appear',
+    K6_VUS: '2',
+  };
+  for (const scenario of Object.keys(registry.testScenarios)) {
+    const result = spawnSync(
+      'k6',
+      [
+        'inspect',
+        '--include-system-env-vars',
+        '--execution-requirements',
+        '--config',
+        join(root, 'workloads', 'smoke', `${scenario}.json`),
+        join(root, 'tests', scenario, 'scenario.js'),
+      ],
+      { cwd: root, env, encoding: 'utf8', timeout: 10000 },
+    );
+    assert.equal(result.error, undefined);
+    assert.notEqual(result.status, 0);
+    assert.match(result.stderr, /Native k6 option environment variables are forbidden: K6_VUS/);
+    assert.doesNotMatch(result.stderr, /secret-value-must-not-appear/);
+  }
+
+  const output = join(temporary, 'native-option-override');
+  const status = run('checkout', 'smoke', output, env, config);
+  assert.notEqual(status, 0);
+  assert.throws(() => readFileSync(join(output, 'summary.json')), /ENOENT/);
 });
 
 test(

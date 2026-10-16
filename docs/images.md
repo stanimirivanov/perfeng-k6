@@ -29,7 +29,8 @@ Verification runs containers with networking disabled, a read-only root filesyst
 all capabilities dropped, and privilege escalation disabled. It checks the k6
 version, non-root user, working directory/entrypoint, hashes of every packaged
 runtime file, workload configuration hashes, and native inspection of all 12
-scenario/profile combinations. It does not run load against a target.
+scenario/profile combinations. It does not run load against a target. It also
+checks that an injected `K6_VUS` option is rejected by the image before load.
 
 The base is grafana/k6 2.2.0 pinned to the OCI index digest recorded in Dockerfile,
 resolved on 2026-09-02. Updating it requires reviewing the pin and running checks.

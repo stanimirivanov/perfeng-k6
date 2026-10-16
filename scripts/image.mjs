@@ -132,6 +132,28 @@ export function verifyImage(image, revision) {
       count++;
     }
   }
+  const unsafeOverride = spawnSync(
+    'docker',
+    [
+      ...restricted,
+      '-e',
+      'K6_VUS=2',
+      image,
+      'inspect',
+      '--include-system-env-vars',
+      '--execution-requirements',
+      '--config',
+      'workloads/smoke/checkout.json',
+      'tests/checkout/scenario.js',
+    ],
+    { cwd: root, encoding: 'utf8', timeout: 30000, maxBuffer: 8 * 1024 * 1024 },
+  );
+  assert.equal(unsafeOverride.error, undefined);
+  assert.notEqual(unsafeOverride.status, 0);
+  assert.match(
+    unsafeOverride.stderr,
+    /Native k6 option environment variables are forbidden: K6_VUS/,
+  );
   console.log(
     'Verified image: k6 ' +
       version +

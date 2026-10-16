@@ -72,8 +72,11 @@ runtime source root; passing Node tests alone does not prove that code is execut
   a successful artifact or zero measurement.
 - Preserve metric names, units, value types, tags and better/worse direction. A semantic rename or
   unit change requires coordinated consumer migration.
-- Runtime environment overrides, target state, secret references, randomized data and fixture
+- Runtime application inputs, target state, secret references, randomized data and fixture
   shortcuts are separate from a static profile hash and require a resolved execution record.
+- Bundled scenarios reject all `K6_*` environment variables before load; native option variables
+  can replace the reviewed scenario. Deployment adapters also keep CLI options fixed because flags
+  have higher precedence than `--config`.
 
 ## JavaScript and k6 runtime design
 
