@@ -25,6 +25,6 @@
   },
   "devDependencies": {
     "acorn": "8.19.0",
-    "prettier": "3.9.9"
+    "prettier": "3.9.10"
   }
 }
