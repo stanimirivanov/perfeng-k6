@@ -308,11 +308,7 @@ test('reject symlink or junction escape from capture root', async () => {
   const f = fixture();
   const external = mkdtempSync(join(tmpdir(), 'perfeng-external-'));
   copyFileSync(join(f.directory, 'summary.json'), join(external, 'summary.json'));
-  symlinkSync(
-    external,
-    join(f.directory, 'escape'),
-    process.platform === 'win32' ? 'junction' : 'dir',
-  );
+  symlinkSync(external, join(f.directory, 'escape'), 'dir');
   f.request.receipts[0].file = 'escape/summary.json';
   await assert.rejects(buildManifest(f.request, f.directory, now), /escapes/);
 });

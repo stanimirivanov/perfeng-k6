@@ -47,13 +47,6 @@ OS temporary directory for inspection.
 Only target systems you own or are authorized to load test. The default target
 is loopback, not a public service. Set BASE_URL explicitly for your environment.
 
-PowerShell:
-
-```powershell
-$env:BASE_URL = 'http://127.0.0.1:8080'
-npm run run -- checkout smoke ./checkout-smoke-output
-```
-
 Shell:
 
 ```sh

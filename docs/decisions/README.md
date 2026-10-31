@@ -81,4 +81,7 @@ How will assumptions and consequences be verified?
 
 ## Index
 
-No ADRs have been accepted yet.
+| ID  | Decision | Status |
+| --- | -------- | ------ |
+
+| [0001](0001-support-linux-hosts.md) | Support Linux development and native browser hosts | Proposed |
