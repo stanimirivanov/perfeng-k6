@@ -94,7 +94,7 @@ npm ci --ignore-scripts
 npm run manifest -- /absolute/frozen-capture /absolute/request.json /absolute/new-raw-result.json
 ```
 
-On Windows use absolute Windows paths and quote paths containing spaces.
+Use absolute Linux paths and quote paths containing spaces.
 The output parent must exist. An existing output is never overwritten, including
 on retry. The CLI returns nonzero for invalid input or an output collision.
 It does not rewrite raw files or contact their URIs.
