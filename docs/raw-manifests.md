@@ -134,3 +134,29 @@ objects or production provenance.
 Run npm run validate and npm test. Tests include valid output, changed bytes,
 unsafe paths, malformed payloads, wrong identities, missing data, unsupported
 image references, bad windows, and output collision handling.
+
+## Offline contract distribution shadow
+
+The opt-in shadow gate checks the current 0.13.0 vendor selection against the
+signed historical release. It authenticates the complete provider closure with
+the reviewed materializer and compares the six selected paths against both the
+existing checksum lock and the vendored bytes. The historical 0.4.0 candidate
+does not participate in the current check.
+
+Stage the exact releases named in
+[the distribution lock](../contracts-distribution.lock.json) before running the
+gate. Place materializer assets in `tool/` and historical release assets in
+`history/` under the same private directory. Supply a trusted
+`perfeng-environment` checkout with its locked Python environment installed and
+the independently pinned GitHub verifier.
+
+```sh
+make contracts-shadow CONTRACTS_SHADOW_ASSETS=/absolute/path/to/assets \
+  CONTRACTS_BOOTSTRAP=/absolute/path/to/reviewed/perfeng-environment \
+  CONTRACTS_VERIFIER=/absolute/path/to/pinned/gh
+```
+
+The gate prints a JSON parity receipt only on success. Missing assets, invalid
+provenance, and changed or incomplete projections fail. Runtime manifest
+validation, workload hashes, image inputs and the raw-result contract version
+continue to use the existing vendored selection.
