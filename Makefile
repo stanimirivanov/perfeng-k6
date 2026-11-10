@@ -66,3 +66,12 @@ image:
 .PHONY: contracts-shadow
 contracts-shadow:
 	@node scripts/contract-distribution.mjs "$(CONTRACTS_SHADOW_ASSETS)" "$(CONTRACTS_BOOTSTRAP)" "$(CONTRACTS_VERIFIER)"
+
+.PHONY: contracts-update-check contracts-package-check
+contracts-update-check:
+	@node --test tests-node/contracts-distribution-image.test.mjs
+	@node scripts/contract-distribution.mjs "$(CONTRACTS_SHADOW_ASSETS)" "$(CONTRACTS_BOOTSTRAP)" "$(CONTRACTS_VERIFIER)"
+
+contracts-package-check:
+	@$(NPM) run image:verify -- $(IMAGE) >&2
+	@node scripts/contract-distribution.mjs --package "$(CONTRACTS_ROLLBACK_CHECKOUT)"

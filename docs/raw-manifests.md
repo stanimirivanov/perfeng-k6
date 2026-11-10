@@ -137,6 +137,8 @@ image references, bad windows, and output collision handling.
 
 ## Offline contract distribution shadow
 
+Prepare reviewed snapshot updates using the [signed distribution workflow](development/contract-distribution.md).
+
 The opt-in shadow gate checks the current 0.13.0 vendor selection against the
 signed historical release. It authenticates the complete provider closure with
 the reviewed materializer and compares the six selected paths against both the
