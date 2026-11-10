@@ -111,7 +111,7 @@ export function verifyImage(image, revision) {
       '/bin/sh',
       image,
       '-ec',
-      'cd /tests; find lib tests workloads definitions -type f -exec sha256sum {} \\; ; sha256sum .k6-version',
+      'cd /tests; test ! -e vendor/contracts && test ! -e contracts-distribution.lock.json || exit 1; find lib tests workloads definitions -type f -exec sha256sum {} \\; ; sha256sum .k6-version',
     ]).toString('utf8'),
   );
   assert.deepEqual(actual, inventory());
