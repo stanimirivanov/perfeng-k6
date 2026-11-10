@@ -16,6 +16,7 @@ help:
 	@echo "  make verify  Run the fast development feedback loop"
 	@echo "  make supply-chain  Run vulnerability and license checks"
 	@echo "  make validate  Run all portable non-image acceptance checks"
+	@echo "  make contracts-shadow  Compare vendored contracts with a staged signed release offline"
 	@echo "  make image  Build and verify IMAGE (default: perfeng-k6:local-check)"
 
 bootstrap:
@@ -61,3 +62,7 @@ validate: verify supply-chain
 image:
 	docker build -t $(IMAGE) .
 	$(NPM) run image:verify -- $(IMAGE)
+
+.PHONY: contracts-shadow
+contracts-shadow:
+	@node scripts/contract-distribution.mjs "$(CONTRACTS_SHADOW_ASSETS)" "$(CONTRACTS_BOOTSTRAP)" "$(CONTRACTS_VERIFIER)"
