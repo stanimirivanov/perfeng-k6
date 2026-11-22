@@ -18,8 +18,8 @@ There is no Python project in this repository.
 
 ## Development and validation
 
-Contributor workflow and repository policy are defined in
-[CONTRIBUTING.md](CONTRIBUTING.md). Runner-specific design and verification rules are in the
+See [AGENTS.md](AGENTS.md) for the agent workflow and
+[CONTRIBUTING.md](CONTRIBUTING.md) for repository requirements. Runner-specific design and verification rules are in the
 [engineering standards](docs/development/engineering-standards.md), and durable decisions are
 recorded in [ADRs](docs/decisions/README.md). The
 [coding harness](docs/development/harness.md) defines command cost and ownership.

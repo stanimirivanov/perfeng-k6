@@ -6,8 +6,6 @@
 - Use MUST, SHOULD and MAY as defined below; lowercase wording is explanatory.
 - Proceed on documented, reversible assumptions and stop for choices that materially affect
   workload identity, load safety, measurement meaning, compatibility, security or external state.
-- Prepare requested changes without staging or committing, then print issue content for the
-  repository owner.
 - Run exact checks, including image verification where applicable, and report unavailable checks
   as not run—never as passed.
 - Use exact published milestone titles in the form `MNN — Outcome`.
@@ -22,19 +20,19 @@
 
 Lowercase guidance does not silently create another normative level.
 
-| Concern                                                       | Canonical source                                                                                                          |
-| :------------------------------------------------------------ | :------------------------------------------------------------------------------------------------------------------------ |
-| Contributor workflow, issue timing, escalation and completion | This document                                                                                                             |
-| Concise contributor and agent entry point                     | [AGENTS.md](AGENTS.md)                                                                                                    |
-| Task-oriented documentation routing                           | [docs/README.md](docs/README.md)                                                                                          |
-| Coding harness and verification tiers                         | [docs/development/harness.md](docs/development/harness.md)                                                                |
-| k6 and JavaScript engineering                                 | [docs/development/engineering-standards.md](docs/development/engineering-standards.md)                                    |
-| Dependency admission and supply-chain policy                  | [docs/development/dependency-policy.md](docs/development/dependency-policy.md)                                            |
-| Architecture decisions                                        | [docs/decisions](docs/decisions/README.md)                                                                                |
-| Cross-repository milestones                                   | [perfeng-environment roadmap](https://github.com/stanimirivanov/perfeng-environment/blob/main/docs/roadmap/milestones.md) |
-| Supported behavior and exact commands                         | [README.md](README.md)                                                                                                    |
-| Workload and manifest semantics                               | [docs/raw-manifests.md](docs/raw-manifests.md)                                                                            |
-| Image publication                                             | [docs/images.md](docs/images.md)                                                                                          |
+| Concern                                      | Canonical source                                                                                                          |
+| :------------------------------------------- | :------------------------------------------------------------------------------------------------------------------------ |
+| Contributor requirements and verification    | This document                                                                                                             |
+| Concise contributor and agent entry point    | [AGENTS.md](AGENTS.md)                                                                                                    |
+| Task-oriented documentation routing          | [docs/README.md](docs/README.md)                                                                                          |
+| Coding harness and verification tiers        | [docs/development/harness.md](docs/development/harness.md)                                                                |
+| k6 and JavaScript engineering                | [docs/development/engineering-standards.md](docs/development/engineering-standards.md)                                    |
+| Dependency admission and supply-chain policy | [docs/development/dependency-policy.md](docs/development/dependency-policy.md)                                            |
+| Architecture decisions                       | [docs/decisions](docs/decisions/README.md)                                                                                |
+| Cross-repository milestones                  | [perfeng-environment roadmap](https://github.com/stanimirivanov/perfeng-environment/blob/main/docs/roadmap/milestones.md) |
+| Supported behavior and exact commands        | [README.md](README.md)                                                                                                    |
+| Workload and manifest semantics              | [docs/raw-manifests.md](docs/raw-manifests.md)                                                                            |
+| Image publication                            | [docs/images.md](docs/images.md)                                                                                          |
 
 When sources conflict, the narrower source governs its concern. An accepted ADR governs its
 decision until superseded. Surface unresolved conflict rather than quietly choosing the convenient
@@ -45,8 +43,7 @@ rule.
 A contributor MUST inspect the branch and working tree and preserve unrelated changes; read
 affected scenarios, profiles, definitions, tests, contract locks and documentation; identify the
 smallest independently reviewable outcome; identify affected load, duration, measurement windows,
-identities, contracts, consumers, packaging and operations; and select the workflow under
-[Issue timing](#issue-timing).
+identities, contracts, consumers, packaging and operations.
 
 A contributor MUST NOT discard, overwrite, reformat or incorporate unrelated work to obtain a
 clean diff. Destructive operations and external writes outside the task require explicit
@@ -73,18 +70,11 @@ different runner designs. State evidence, options, consequences and work that ca
 
 ## Issue timing
 
-- When an issue number is supplied, follow its scope and milestone. A material mismatch follows
-  the escalation rules.
-- Without an issue number, prepare the smallest coherent requested change and print a complete
-  proposed issue in the completion report. The owner creates the issue and then creates or renames
-  the branch with its number.
-- Contributors acting for the owner MUST NOT stage, commit, push, create or modify issues, create
-  pull requests, run load against non-loopback targets, publish images, create releases, or change
-  milestones unless explicitly requested.
-- Read-only investigation and loopback-only verification MAY occur before an issue exists.
-
-Creating or modifying GitHub records, packages, images or releases and sending load to an external
-target are externally visible writes and require explicit authority.
+Use the [issue tracker configuration](docs/agents/issue-tracker.md) and the
+applicable skill. Reuse a supplied issue and follow its scope and milestone.
+For issue or PR writes, verify the target repository and authorization first.
+Staging, committing, pushing, publishing, changing milestones and other
+external mutations require authorization.
 
 ## Milestones and required issue
 
@@ -146,18 +136,9 @@ execution adapters for roadmap appearance.
 
 ## Development workflow
 
-1. Select the workflow defined in [Issue timing](#issue-timing).
-2. Prepare one focused change without staging, committing or pushing for the owner.
-3. Add or update loopback fixtures and tests.
-4. Implement the smallest coherent solution and update definitions, hashes and documentation.
-5. Format and run exact checks.
-6. Review the diff for secrets, generated churn, load/measurement changes, assumptions, lock/package
-   drift and unrelated edits.
-7. Print the canonical [completion report](#completion-report).
-8. The owner creates or confirms the issue and branch, may adjust the change, commits with `[#N]`,
-   pushes and opens the pull request.
-
-Do not store task-specific issue bodies, PR descriptions or handoff notes in the repository.
+Use the applicable `mattpocock/skills` workflow through [AGENTS.md](AGENTS.md).
+Use this guide for the repository's technical requirements, verification,
+issue and PR metadata, and authorization boundaries.
 
 ## External operations and destructive actions
 
@@ -216,8 +197,6 @@ limitations.
 
 ## Review checklist
 
-- [ ] MUST: The issue uses the required structure and exact milestone title.
-- [ ] MUST: The change is one coherent load-generation outcome.
 - [ ] MUST: Target authorization, load magnitude, model, duration and phase boundaries are explicit.
 - [ ] MUST: Definitions, profile bytes, hashes, scenarios and documentation agree.
 - [ ] MUST: Exit status, thresholds, incomplete evidence and measurement outcomes remain distinct.
@@ -229,7 +208,5 @@ limitations.
 
 ## Completion report
 
-After every work item, print the repository, exact milestone, proposed issue title, complete issue
-body, assumptions and limitations, verification outcomes distinguished as passed/failed/not run,
-and a suggested `[#N]` commit subject. When an issue exists, repeat or amend it so delivered scope
-is auditable. Printing the report does not publish external records.
+Report actual verification outcomes and any remaining limitations. Include the
+linked issue or PR when one exists. Follow the applicable skill for delivery.
