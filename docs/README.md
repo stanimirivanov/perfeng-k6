@@ -29,7 +29,7 @@
 
 ## Authority
 
-[CONTRIBUTING.md](../CONTRIBUTING.md) is canonical workflow policy.
+Use [AGENTS.md](../AGENTS.md) for the agent workflow and [CONTRIBUTING.md](../CONTRIBUTING.md) for repository requirements.
 [AGENTS.md](../AGENTS.md) is the concise tool-facing entry point. The root
 [README](../README.md), workload guide, and raw-manifest guide define supported
 behavior in their boundaries. Accepted ADRs govern their decisions until

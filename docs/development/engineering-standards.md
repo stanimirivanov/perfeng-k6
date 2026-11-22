@@ -134,7 +134,6 @@ runtime source root; passing Node tests alone does not prove that code is execut
 - Node tests cover runner behavior, contract assembly, filesystem boundaries and image policy.
 - Scenario execution tests use only the ephemeral loopback fixture and scrub inherited k6 outputs,
   credentials and runtime overrides.
-- Defect fixes SHOULD begin with a failing regression test.
 - Test exact boundary values, invalid overrides, threshold failures, missing output, changed bytes,
   unsafe paths, wrong identities and output collisions.
 - Tests MUST be deterministic, isolated and independent of network, locale, filesystem ordering and
