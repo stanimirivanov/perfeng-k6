@@ -247,7 +247,7 @@ function checkADRs(documents) {
   const records = new Map();
   const violations = [];
   for (const [path, document] of documents) {
-    if (dirname(path).split(sep).join('/') !== 'docs/decisions' || path.endsWith('/README.md')) {
+    if (dirname(path).split(sep).join('/') !== 'docs/adr' || path.endsWith('/README.md')) {
       continue;
     }
     const fileMatch = path.split('/').at(-1).match(adrFile);
@@ -259,7 +259,7 @@ function checkADRs(documents) {
           'adr.filename',
           'ADR filename is not four-digit kebab-case',
           'rename it and update the decision index',
-          'docs/decisions/README.md#naming-and-lifecycle',
+          'docs/adr/README.md#naming-and-lifecycle',
         ),
       );
       continue;
@@ -273,7 +273,7 @@ function checkADRs(documents) {
           'adr.heading',
           'ADR heading does not match its filename number',
           'use `# ADR-NNNN: Decision title`',
-          'docs/decisions/README.md#naming-and-lifecycle',
+          'docs/adr/README.md#naming-and-lifecycle',
         ),
       );
       continue;
@@ -300,7 +300,7 @@ function checkADRs(documents) {
             'adr.metadata',
             `ADR is missing ${field}`,
             'restore the canonical metadata field',
-            'docs/decisions/README.md#naming-and-lifecycle',
+            'docs/adr/README.md#naming-and-lifecycle',
           ),
         );
       }
@@ -313,7 +313,7 @@ function checkADRs(documents) {
           'adr.date',
           'ADR date is not YYYY-MM-DD',
           'use an ISO calendar date',
-          'docs/decisions/README.md#naming-and-lifecycle',
+          'docs/adr/README.md#naming-and-lifecycle',
         ),
       );
     }
@@ -325,7 +325,7 @@ function checkADRs(documents) {
           'adr.milestone',
           'ADR milestone does not match `MNN — Outcome`',
           'use the exact published milestone title',
-          'docs/decisions/README.md#naming-and-lifecycle',
+          'docs/adr/README.md#naming-and-lifecycle',
         ),
       );
     }
@@ -341,18 +341,18 @@ function checkADRs(documents) {
     if (number !== expected) {
       violations.push(
         violation(
-          'docs/decisions/README.md',
+          'docs/adr/README.md',
           1,
           'adr.sequence',
           `ADR sequence expected ${expected} but found ${number}`,
           'renumber an unpublished collision or restore the record',
-          'docs/decisions/README.md#naming-and-lifecycle',
+          'docs/adr/README.md#naming-and-lifecycle',
         ),
       );
     }
   });
 
-  const indexDocument = documents.get('docs/decisions/README.md');
+  const indexDocument = documents.get('docs/adr/README.md');
   for (const [number, record] of records) {
     const row = indexDocument?.lines.find((line) => line.startsWith(`| [${number}](`));
     if (!row || !row.includes(`| ${record.title} | ${record.status} |`)) {
@@ -363,7 +363,7 @@ function checkADRs(documents) {
           'adr.index',
           'ADR is missing or inconsistent in the decision index',
           'add its exact number, link, title, and status',
-          'docs/decisions/README.md#naming-and-lifecycle',
+          'docs/adr/README.md#naming-and-lifecycle',
         ),
       );
     }

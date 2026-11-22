@@ -17,7 +17,7 @@ function fixture() {
   write(root, 'CONTRIBUTING.md', '# Contributing\n\n## TL;DR\n\n- Policy.\n');
   write(
     root,
-    'docs/decisions/README.md',
+    'docs/adr/README.md',
     '# Architecture decision records\n\n## TL;DR\n\n- Decisions.\n\n## Index\n',
   );
   write(

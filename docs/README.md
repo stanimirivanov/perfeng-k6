@@ -11,6 +11,8 @@
 - Update this map when a canonical guide moves or a recurring task gains a new
   source of truth.
 
+Read the [repository glossary](../GLOSSARY.md) for domain terminology.
+
 ## Route by task
 
 | Task or changed boundary                                | Read first                                                                                           | Verify or consult                                             |
@@ -23,7 +25,7 @@
 | Contract updates and rollback                           | [Contract distribution](development/contract-distribution.md)                                        | `make contracts-update-check`, `make contracts-package-check` |
 | Runner image or publication                             | [Image guide](images.md)                                                                             | `make image`                                                  |
 | Dependency, license, or vulnerability changes           | [Dependency policy](development/dependency-policy.md)                                                | `make supply-chain`                                           |
-| Durable technical decision                              | [ADR index](decisions/README.md)                                                                     | ADR template and supersession rules                           |
+| Durable technical decision                              | [ADR index](adr/README.md)                                                                           | ADR template and supersession rules                           |
 | Extraction history or provenance                        | [Migration provenance](migration-provenance.md)                                                      | Source and contract locks                                     |
 | Vulnerability reporting                                 | [SECURITY.md](../SECURITY.md)                                                                        | Repository owner                                              |
 
